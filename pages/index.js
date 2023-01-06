@@ -9,7 +9,7 @@ import Date from '../components/date';
 
 // Add these imports at the top of the file
 const { MongoClient } = require('mongodb');
-const uri = "mongodb://sjklDE4edjJJC3320D:<insertYourPassword>@docdb-2023-01-05-16-51-08.cluster-c7kzelklspap.eu-west-1.docdb.amazonaws.com:27017/?ssl=true&ssl_ca_certs=rds-combined-ca-bundle.pem&replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false";
+const uri = "mongodb://sjklDE4edjJJC3320D:sr4nzG7A4MtJVNL@docdb-2023-01-05-16-51-08.cluster-c7kzelklspap.eu-west-1.docdb.amazonaws.com:27017/?ssl=true&ssl_ca_certs=rds-combined-ca-bundle.pem&replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false";
 const client = new MongoClient(uri, { useNewUrlParser: true });
 
 export async function getStaticProps() {
