@@ -1,11 +1,16 @@
 import Head from 'next/head';
 import Layout, { siteTitle } from '../components/layout';
 import utilStyles from '../styles/utils.module.css';
+import { useState, useEffect } from 'react'
 
 import { getSortedPostsData } from '../lib/posts';
 import Link from 'next/link';
 import Date from '../components/date';
 
+// Add these imports at the top of the file
+const { MongoClient } = require('mongodb');
+const uri = "mongodb://sjklDE4edjJJC3320D:<insertYourPassword>@docdb-2023-01-05-16-51-08.cluster-c7kzelklspap.eu-west-1.docdb.amazonaws.com:27017/?ssl=true&ssl_ca_certs=rds-combined-ca-bundle.pem&replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false";
+const client = new MongoClient(uri, { useNewUrlParser: true });
 
 export async function getStaticProps() {
   const allPostsData = getSortedPostsData();
@@ -17,6 +22,20 @@ export async function getStaticProps() {
 }
 
 export default function Home ({ allPostsData }) {
+  // Add this state variable and useEffect hook to fetch data from Amazon DocumentDB
+  const [docs, setDocs] = useState([]);
+  useEffect(() => {
+    const fetchData = async () => {
+      await client.connect();
+      const collection = client.db("test").collection("devices");
+      // Read all documents from the collection
+      const docs = await collection.find().toArray();
+      setDocs(docs);
+      client.close();
+    }
+    fetchData();
+  }, []);
+
   return (
     <Layout home>
       <Head>
@@ -33,17 +52,10 @@ export default function Home ({ allPostsData }) {
        {/* Add this <section> tag below the existing <section> tag */}
        <section className={`${utilStyles.headingMd} ${utilStyles.padding1px}`}>
         <h2 className={utilStyles.headingLg}>Blog</h2>
-        <ul className={utilStyles.list}>
-          {allPostsData.map(({ id, date, title }) => (
-           <li className={utilStyles.listItem} key={id}>
-           <Link href={`/posts/${id}`}>{title}</Link>
-           <br />
-           <small className={utilStyles.lightText}>
-             <Date dateString={date} />
-           </small>
-         </li>
-          ))}
-        </ul>
+        {/* Add a loop to display the documents from Amazon DocumentDB */}
+        {docs.map(doc => (
+          <p key={doc._id}>{doc.name}</p>
+        ))}
       </section>
     </Layout>
   );
